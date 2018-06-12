@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="Game Demo">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" href="../dist/css/index.css">
+<script src="../dep/babel-standalone.min.js"></script>
+<script src="../dep/trianglify.min.js"></script>
+<title>Game Demo</title>
+<script type="text/javascript">
+    const generateRandomDelay = (minSecond = 2, maxSecond = 6) => ( // 默认：2 ~ 6秒
+        parseInt((minSecond + (maxSecond - minSecond) * Math.random()) * 1000, 10)
+    );
+    const generateRandomColor = (arr = []) => {
+        if (arr.length) {
+            const randomIndex = parseInt(arr.length * Math.random());
+            return arr[randomIndex];
+        }
+        else {
+            return '#' + Math.floor(Math.random() * 16777215).toString(16);
+        }
+    };
+    const colors = [
+        '#3b6fff',
+        '#f34b60',
+        '#ff8e5b',
+        '#38a4f7',
+        '#05b449',
+        '#884efc',
+        '#669900'
+    ];
+    let stages = [
+        'begin',
+        'watingChange',
+        'watingClick',
+        'finished'
+    ];
+    let currentStage = stages[0];
+    let timer, timeBegin;
+    let timeUsed;
+    let average = [];
+    let total = 0;
+
+    const changeHtml = (text, bgColor) => {
+        text && (document.getElementById('btn').innerHTML = text);
+        bgColor && (document.getElementById('colorBlock').style.background = bgColor);
+    };
+
+    const changing = () => {
+        window.clearTimeout(timer);
+        currentStage = 'watingClick';
+        changeHtml('快快点击', generateRandomColor(colors));
+        timeBegin = new Date();
+    }
+
+    const startGame = () => {
+        currentStage = 'watingChange';
+        changeHtml('等待变色');
+        document.getElementById('analysis').innerHTML = '';
+        timer = window.setTimeout(changing, generateRandomDelay());
+    };
+
+    const handleClick = () => {
+        // 开始（第一次 or restart）
+        if (currentStage === 'begin' || currentStage === 'finished') {
+            startGame();
+        }
+        // 手快 在等待变色时点击，需重新计时
+        else if (currentStage === 'watingChange') {
+            window.clearTimeout(timer);
+            timer = window.setTimeout(changing, generateRandomDelay());
+        }
+        // 可点状态下的点击，计算成绩
+        else if (currentStage == 'watingClick') {
+            timeUsed = new Date().getTime() - timeBegin.getTime();
+            average[total] = timeUsed;
+            total ++;
+            currentStage = 'finished';
+            changeHtml('结束（点击重新开始）');
+            document.getElementById('analysis').innerHTML = `
+                第${total}次 反应时间：${timeUsed}ms
+            `;
+        }
+    }
+</script>
+</head>
+
+<body id="demo1">
+    <h1 id="btn">点击开始</h1>
+    <div id="colorBlock" onclick="handleClick()">
+        <h5 id="analysis"></h5>
+    </div>
+</body>
+</html>

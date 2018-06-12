@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="Game Demo">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" href="dist/css/index.css">
+<script src="dep/babel-standalone.min.js"></script>
+<script src="dep/trianglify.min.js"></script>
+<title>Game Demo</title>
+</head>
+
+<body id="index">
+    <div id="canvas"></div>
+    <ul>
+        <li><a href="./pages/demo1.html">Demo 1</a></li>
+        <li><a href="./pages/demo2.html">Demo 2</a></li>
+        <li><a href="./pages/demo3.html">Demo 3</a></li>
+    </ul>
+    <script type="text/babel">
+        const pattern = Trianglify({
+            width: window.innerWidth,
+            height: window.innerHeight
+        });
+        document.getElementById('canvas').appendChild(pattern.canvas());
+    </script>
+</body>
+</html>
